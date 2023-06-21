@@ -103,8 +103,8 @@ class SLEAPModel:
 
 def main():
     print("in main")
-    model = SLEAPModel("/export/lv9/user/avdleij/dunlin_project/test_set/video")
-    model.predict()
+    # model = SLEAPModel("/export/lv9/user/avdleij/dunlin_project/test_set/video")
+    # model.predict()
 
 
 if __name__ == "__main__":
