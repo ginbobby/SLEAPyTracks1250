@@ -7,17 +7,28 @@ autor: Antsje van der Leij
 
 """
 import argparse
-from contextlib import contextmanager
-import sys
-import os
-import sleap
-import glob
 
 parser = argparse.ArgumentParser(
     prog='SLEAPyTracks',
     description='A tracker for tracking exploration behavior.',
     epilog='Still a work in progress!')
 parser.add_argument('video_dir', help="path to the directory containing the videos to be tracked")
+args = parser.parse_args()
+
+from contextlib import contextmanager
+import sys
+import os
+import sleap
+import glob
+import ffmpeg
+import subprocess
+
+parser = argparse.ArgumentParser(
+    prog='SLEAPyTracks',
+    description='A tracker for tracking exploration behavior.',
+    epilog='Still a work in progress!')
+parser.add_argument('video_dir', help="path to the directory containing the videos to be tracked")
+args = parser.parse_args()
 
 
 class SLEAPModel:
@@ -42,7 +53,7 @@ class SLEAPModel:
             sys.exit("File path to videos does not exist or is incorrect!")
 
         # get only one type of file
-        files = [f for f in os.listdir(path) if f.endswith(file_extension)]
+        files = [f for f in os.listdir(path) if f.endswith(file_extension) or f.endswith(file_extension.upper())]
 
         # check if any files match file type
         if not files:
@@ -92,19 +103,34 @@ class SLEAPModel:
         videos = self.get_files_from_dir(self.video_dir, ".mp4")
         print(videos)
         for video in videos:
+
             print("run prediction for:")
             print(video)
             # use video name as name for predictions save file
             save_file = video.replace(".mp4", "")
             sleap_video = self.load_video(self.video_dir + "/" + video)
-
-            self.run_model(sleap_video, save_file)
+            try:
+                self.run_model(sleap_video, save_file)
+            except KeyError:
+                print("ran into error while indexing video: " + video)
+                print("Attempting to fix it. please wait...")
+                subprocess.run(
+                    ["ffmpeg", "-y", "-i", self.video_dir + "/" + video, "-c:v", "libx264", "-pix_fmt", "yuv420p",
+                     "-preset", "superfast", "-crf", "23", self.video_dir + "/fixed" + video])
+                try:
+                    sleap_video = self.load_video(self.video_dir + "/fixed" + video)
+                    self.run_model(sleap_video, save_file)
+                except KeyError:
+                    print("unable to fix video")
+                    print("continue with next video (if there are any)")
 
 
 def main():
     print("in main")
-    # model = SLEAPModel("/export/lv9/user/avdleij/dunlin_project/test_set/video")
-    # model.predict()
+    print(args)
+
+    model = SLEAPModel(args.video_dir)
+    model.predict()
 
 
 if __name__ == "__main__":
