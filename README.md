@@ -58,7 +58,16 @@ git clone https://github.com/aavanderleij/SLEAPyTracks.git
 ```
 ## Usage ##
 
+with the Anaconda powershell got into the map for SLEAPyTracks
 
+```bash
+cd SLEAPyTracks
+```
+run SLEAPyTracks on the directory you want to track
+
+```bash
+python SLEAPyTracks <your_video_dir_location>
+```
 
 ## References ##
 SLEAP is the successor to the single-animal pose estimation software LEAP (Pereira et al., Nature Methods, 2019).

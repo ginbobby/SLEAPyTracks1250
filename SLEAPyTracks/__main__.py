@@ -11,11 +11,11 @@ parser = argparse.ArgumentParser(
     description='A tracker for tracking exploration behavior. Currently trained for use on red knot exploration tests.',
     epilog='Still a work in progress!')
 parser.add_argument('video_dir', help="path to the directory containing the videos to be tracked")
-parser.add_argument("-o", "--output_dir", help="path to the directory to store the csv output files",
-                    default="/SLEAPpyTracks_output")
-parser.add_argument("-n", "--number_of_animals", help="the number of animals that are in the video")
+parser.add_argument("--output_dir", "-o", help="path to the directory to store the csv output files",
+ metavar="")
+parser.add_argument("-n", "--number_of_animals", help="the number of animals that are in the video", default=1)
 parser.add_argument("-t", "--tracking", action="store_true", help="use tracking functionality (not trained properly "
-                                                                  "yet!)")
+                                                                  "yet!)", metavar="")
 
 args = parser.parse_args()
 
