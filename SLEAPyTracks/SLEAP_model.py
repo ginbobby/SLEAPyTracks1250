@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env conda run -n sleap python
 """
 Takes a model that was made with SLEAP and uses it to estimate keypoint positions of animals on a video
 
@@ -6,6 +6,12 @@ autor: Antsje van der Leij
 
 
 """
+
+import sys
+import os
+import sleap
+import glob
+import subprocess
 import argparse
 
 parser = argparse.ArgumentParser(
@@ -13,21 +19,7 @@ parser = argparse.ArgumentParser(
     description='A tracker for tracking exploration behavior.',
     epilog='Still a work in progress!')
 parser.add_argument('video_dir', help="path to the directory containing the videos to be tracked")
-args = parser.parse_args()
-
-from contextlib import contextmanager
-import sys
-import os
-import sleap
-import glob
-import ffmpeg
-import subprocess
-
-parser = argparse.ArgumentParser(
-    prog='SLEAPyTracks',
-    description='A tracker for tracking exploration behavior.',
-    epilog='Still a work in progress!')
-parser.add_argument('video_dir', help="path to the directory containing the videos to be tracked")
+parser.add_argument("-n", "--number_of_animals", help="the number of animals that are in the video")
 args = parser.parse_args()
 
 
@@ -80,7 +72,57 @@ class SLEAPModel:
 
         return model
 
-    def run_model(self, video, save_name):
+    def run_tracker(self, labels, instance_count):
+
+        print(labels)
+        print("initializing tracker")
+
+        # Here I'm removing the tracks so we just have instances without any tracking applied.
+        for instance in labels.instances():
+            instance.track = None
+        labels.tracks = []
+
+        # Create tracker
+        tracker = sleap.nn.tracking.Tracker.make_tracker_by_name(
+            # General tracking options
+            tracker="flow",
+            track_window=5,
+
+            # Matching options
+            similarity="instance",
+            match="greedy",
+            min_new_track_points=1,
+            min_match_points=1,
+
+            # Optical flow options (only applies to "flow" tracker)
+            img_scale=0.5,
+            of_window_size=21,
+            of_max_levels=3,
+
+            # Pre-tracking filtering options
+            target_instance_count=instance_count,
+            pre_cull_to_target=True,
+            pre_cull_iou_threshold=0.8,
+
+            # Post-tracking filtering options
+            post_connect_single_breaks=True,
+            clean_instance_count=instance_count,
+            clean_iou_threshold=None,
+        )
+
+        tracked_lfs = []
+        for lf in labels:
+            lf.instances = tracker.track(lf.instances, img=lf.image)
+            tracked_lfs.append(lf)
+            print(lf)
+
+        tracked_labels = sleap.Labels(tracked_lfs)
+
+
+
+        return tracked_labels
+
+    def run_model(self, video):
         """
         Loads a pre-trained model from SLEAP.
         Runs the model on video to generate predictions.
@@ -95,9 +137,9 @@ class SLEAPModel:
         labels = sleap.Labels(labels.labeled_frames)
         # save predictions to file
 
-        labels.save("predictions/" + save_name)
+        return labels
 
-    def predict(self):
+    def predict(self, instance_count, tracking):
         print("running predecit")
 
         videos = self.get_files_from_dir(self.video_dir, ".mp4")
@@ -108,9 +150,11 @@ class SLEAPModel:
             print(video)
             # use video name as name for predictions save file
             save_file = video.replace(".mp4", "")
+            save_file = save_file.replace(".MP4", "")
             sleap_video = self.load_video(self.video_dir + "/" + video)
             try:
-                self.run_model(sleap_video, save_file)
+                labels = self.run_model(sleap_video)
+                labels.save("predictions/" + save_file)
             except KeyError:
                 print("ran into error while indexing video: " + video)
                 print("Attempting to fix it. please wait...")
@@ -119,10 +163,20 @@ class SLEAPModel:
                      "-preset", "superfast", "-crf", "23", self.video_dir + "/fixed" + video])
                 try:
                     sleap_video = self.load_video(self.video_dir + "/fixed" + video)
-                    self.run_model(sleap_video, save_file)
+                    labels = self.run_model(sleap_video)
+                    labels.save("predictions/" + save_file)
                 except KeyError:
                     print("unable to fix video")
                     print("continue with next video (if there are any)")
+
+            if tracking:
+
+                print("tracking...")
+                print("this can take a few minutes")
+                tracked_labels = self.run_tracker(labels, instance_count)
+                print(tracked_labels)
+
+                tracked_labels.save("predictions/tracks/" + save_file)
 
 
 def main():
