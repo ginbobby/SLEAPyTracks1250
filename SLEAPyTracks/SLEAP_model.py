@@ -1,4 +1,4 @@
-#!/usr/bin/env conda run -n sleap python
+#!/usr/bin/env python
 """
 Takes a model that was made with SLEAP and uses it to estimate keypoint positions of animals on a video
 

@@ -1,4 +1,4 @@
-#!/usr/bin/env conda run -n sleap python
+#!/usr/bin/env python
 """
 https://github.com/christianversloot/machine-learning-articles/blob/main/how-to-use-h5py-and-keras-to-train-with-data-from-hdf5-files.md
 https://sleap.ai/api/sleap.instance.html?highlight=predicted#sleap.instance.PredictedInstance
