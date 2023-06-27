@@ -98,12 +98,14 @@ class SleapParser:
                     new_row[node_name_y] = [y]
                 df1 = pandas.DataFrame(new_row)
                 data_frame = pandas.concat([data_frame, df1], ignore_index=True)
-        print(data_frame)
         # change extension for file name
         save_name = video_name.replace("mp4", "csv")
         save_name = save_name.replace("MP4", "csv")
         # save to csv
-        data_frame.to_csv(path_or_buf= output_dir + "/" + save_name)
+        if not os.path.exists(output_dir):
+            os.mkdir(output_dir)
+
+        data_frame.to_csv(output_dir + "/" + save_name)
 
     def get_results(self, predict_dir, output_dir):
         print("converting to csv")
