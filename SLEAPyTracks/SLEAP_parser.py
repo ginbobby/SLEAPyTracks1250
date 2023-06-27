@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """
-https://github.com/christianversloot/machine-learning-articles/blob/main/how-to-use-h5py-and-keras-to-train-with-data-from-hdf5-files.md
-https://sleap.ai/api/sleap.instance.html?highlight=predicted#sleap.instance.PredictedInstance
+extracts information from slp files such as node coordinates.
+
 """
 import os
 import sys
@@ -9,10 +9,6 @@ import sys
 import numpy
 import pandas
 import sleap
-
-
-# TODO "mirror" left and right eyes
-# TODO remove difficult frames
 
 
 class SleapParser:
@@ -42,6 +38,11 @@ class SleapParser:
         return files
 
     def create_dataframe(self, node_names):
+        """
+        creates an empty pandas dataframe for sleap_to_pandas to fill
+        :param node_names: list with strings
+        :return: empty pandas dataframe
+        """
 
         print("making data frame...")
         # make list with standard SLEAP data
