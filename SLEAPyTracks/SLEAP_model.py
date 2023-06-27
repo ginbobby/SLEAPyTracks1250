@@ -12,15 +12,6 @@ import os
 import sleap
 import glob
 import subprocess
-import argparse
-
-parser = argparse.ArgumentParser(
-    prog='SLEAPyTracks',
-    description='A tracker for tracking exploration behavior.',
-    epilog='Still a work in progress!')
-parser.add_argument('video_dir', help="path to the directory containing the videos to be tracked")
-parser.add_argument("-n", "--number_of_animals", help="the number of animals that are in the video")
-args = parser.parse_args()
 
 
 class SLEAPModel:
@@ -37,12 +28,17 @@ class SLEAPModel:
         self.predictions_out_dir = predictions_out_dir
 
     def get_files_from_dir(self, path, file_extension):
-        print("get files")
+        """
+        gets files names ending with the file exetntion from target directory and returns those files as a list
+        :param path: absolute path to target directory
+        :param file_extension: the extension of retrieved files
+        :return: list with files ending with the file_extension
+        """
 
         # check if file exists
         if not os.path.isdir(path):
-            print(path)
             sys.exit("File path to videos does not exist or is incorrect!")
+            print(path)
 
         # get only one type of file
         files = [f for f in os.listdir(path) if f.endswith(file_extension) or f.endswith(file_extension.upper())]
@@ -54,6 +50,11 @@ class SLEAPModel:
         return files
 
     def load_video(self, path_to_video):
+        """
+        Loads a mp4 video as SLEAP video object
+        :param path_to_video:
+        :return: SLEAP video object
+        """
         print("load video")
 
         loaded_video = sleap.load_video(path_to_video)
@@ -61,7 +62,7 @@ class SLEAPModel:
 
     def load_model(self):
         """
-        loads a trained SLEAP model
+        loads a trained SLEAP model directory model
         """
         print("load model")
 
@@ -73,6 +74,13 @@ class SLEAPModel:
         return model
 
     def run_tracker(self, labels, instance_count):
+
+        """
+        initialises SLEAP tracker
+        :param labels: SLEAP Labels object
+        :param instance_count: int
+        :return: SLEAP Labels object
+        """
 
         print(labels)
         print("initializing tracker")
@@ -118,8 +126,6 @@ class SLEAPModel:
 
         tracked_labels = sleap.Labels(tracked_lfs)
 
-
-
         return tracked_labels
 
     def run_model(self, video):
@@ -127,6 +133,8 @@ class SLEAPModel:
         Loads a pre-trained model from SLEAP.
         Runs the model on video to generate predictions.
         Predictions are then saved.
+        :param video: video file name
+        :return: SLEAP Labels object
         """
 
         print('running model...')
@@ -135,12 +143,16 @@ class SLEAPModel:
 
         labels = self.model.predict(video)
         labels = sleap.Labels(labels.labeled_frames)
-        # save predictions to file
 
         return labels
 
     def predict(self, instance_count, tracking):
-        print("running predecit")
+        """
+        run model over every video in target directory and actives tracking if tracking is True
+        :param instance_count: (int) amount of expected animals in videos
+        :param tracking: (boolean)
+
+        """
 
         videos = self.get_files_from_dir(self.video_dir, ".mp4")
         print(videos)
@@ -152,9 +164,15 @@ class SLEAPModel:
             save_file = video.replace(".mp4", "")
             save_file = save_file.replace(".MP4", "")
             sleap_video = self.load_video(self.video_dir + "/" + video)
+            # remove slp from previous run (for testing this is done now and not after program is completed
+            files = [f for f in os.listdir("predictions/")]
+            for f in files:
+                os.remove("predictions/" + f)
+            # most common error is KeyError while indexing videos
             try:
                 labels = self.run_model(sleap_video)
                 labels.save("predictions/" + save_file)
+            # ffmpeg command is a quick fix for KeyError while indexing
             except KeyError:
                 print("ran into error while indexing video: " + video)
                 print("Attempting to fix it. please wait...")
@@ -168,9 +186,10 @@ class SLEAPModel:
                 except KeyError:
                     print("unable to fix video")
                     print("continue with next video (if there are any)")
+                    continue
 
+            # if tracking flag is set to True start tracking function
             if tracking:
-
                 print("tracking...")
                 print("this can take a few minutes")
                 tracked_labels = self.run_tracker(labels, instance_count)
@@ -181,7 +200,6 @@ class SLEAPModel:
 
 def main():
     print("in main")
-    print(args)
 
     model = SLEAPModel(args.video_dir)
     model.predict()
