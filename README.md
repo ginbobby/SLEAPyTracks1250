@@ -43,19 +43,26 @@ Execute the following lines in the Anaconda powershell:
 conda create -y -n sleap -c sleap -c nvidia -c conda-forge sleap=1.3.0
 ```
 
+During installation conda will show a lot of text on screen. This is normal. 
+
 ```bash
 conda install -n sleap ffmpeg
 ```
 
+
 ### Install SLEAPyTrack ###
 
-Clone the SLEAPyTrack repo from GitHub
+Clone the SLEAPyTracks repo from GitHub
 
 in the Anaconda powershell:
 
 ```bash
 git clone https://github.com/aavanderleij/SLEAPyTracks.git
 ```
+
+To reinstall or update SLEAPyTracks its recommended to remove the SLEAPyTracks folder and clone the repo again.
+
+Remember to save any tracking files you want to keep somewhere else 
 ## Usage ##
 
 with the Anaconda powershell got into the map for SLEAPyTracks
@@ -66,8 +73,29 @@ cd SLEAPyTracks
 run SLEAPyTracks on the directory you want to track
 
 ```bash
-python SLEAPyTracks <your_video_dir_location>
+python SLEAPyTracks "path/to/your/video_dir/location/"
 ```
+
+Output can be found in "SLEAPyTracks/SLEAPyTracks_output"
+
+Files are saved as csv files
+
+more options:
+
+direct output to different directory
+
+```bash
+python SLEAPyTracks "path/to/your/video_dir/location/" -o "path/to/output"
+```
+
+
+track more than one animal in a video (e.g 3 animals):
+
+```bash
+python SLEAPyTracks "path/to/your/video_dir/location/" -t -n 3
+```
+
+
 
 ## References ##
 SLEAP is the successor to the single-animal pose estimation software LEAP (Pereira et al., Nature Methods, 2019).
