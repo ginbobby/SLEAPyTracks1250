@@ -17,13 +17,14 @@ parser.add_argument('-t', '--tracking', action='store_true', help='use tracking 
 
 if __name__ == "__main__":
     args = parser.parse_args()
-    print(args)
+    print("Starting SLEAPyTracks...")
+
     from SLEAP_parser import SleapParser
     from SLEAP_model import SLEAPModel
 
     model = SLEAPModel(args.video_dir)
     model.predict(args.number_of_animals, args.tracking)
 
-    SleapParser().get_results(r'predictions\tracks', args.output_dir)
+    SleapParser().get_results(r'predictions', args.output_dir)
 
     print('all done!')

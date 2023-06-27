@@ -65,7 +65,13 @@ To reinstall or update SLEAPyTracks its recommended to remove the SLEAPyTracks f
 Remember to save any tracking files you want to keep somewhere else 
 ## Usage ##
 
-with the Anaconda powershell got into the map for SLEAPyTracks
+with the Anaconda powershell start the sleap virtual environment
+
+```bash
+conda activate sleap
+```
+
+with the Anaconda powershell go into the map for SLEAPyTracks
 
 ```bash
 cd SLEAPyTracks
