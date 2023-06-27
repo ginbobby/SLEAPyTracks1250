@@ -7,9 +7,9 @@ parser = argparse.ArgumentParser(
     prog='SLEAPyTracks',
     description='A tracker for tracking exploration behavior. Currently trained for use on red knot exploration tests.',
     epilog='Still a work in progress!')
-parser.add_argument('video_dir', help='path to the directory containing the videos to be tracked')
+parser.add_argument('video_dir', help='path to the directory containing the videos to be tracked', type=str)
 parser.add_argument('-o', '--output_dir', help='path to the directory to store the csv output files',
-                    default='/SLEAPyTracks_output')
+                    default='', type=str)
 parser.add_argument('-n', '--number_of_animals', help='the number of animals that are in the video', type=int,
                     default=1)
 parser.add_argument('-t', '--tracking', action='store_true', help='use tracking functionality (not trained properly '
@@ -25,6 +25,9 @@ if __name__ == "__main__":
     model = SLEAPModel(args.video_dir)
     model.predict(args.number_of_animals, args.tracking)
 
-    SleapParser().get_results(r'predictions', args.output_dir)
+    if args.output_dir == '':
+        SleapParser().get_results(r'predictions', args.video_dir + 'SLEAPyTracks_output')
+    else:
+        SleapParser().get_results(r'predictions', args.output_dir)
 
     print('all done!')
