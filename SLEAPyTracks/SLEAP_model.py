@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 """
-Takes a model that was made with SLEAP and uses it to estimate keypoint positions of animals on a video
+Uses a model that was trained with SLEAP and uses it to estimate keypoint positions of the red knot in video's.
 
 autor: Antsje van der Leij
-
 
 """
 
