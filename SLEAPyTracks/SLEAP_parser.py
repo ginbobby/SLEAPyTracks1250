@@ -47,7 +47,7 @@ class SleapParser:
         print("making data frame...")
         # make list with standard SLEAP data
         sleap_video_datatypes = [("video", str), ("video_height", int), ("video_width", int), ("frame_idx", int),
-                                 ("instance_id", int), ("score", int)]
+                                 ("instance_id", int), ("score", int), ("fps", int)]
         # add nodes from the skeleton used in de video
         for name in node_names:
             # set x and y coordinates
@@ -67,6 +67,8 @@ class SleapParser:
         node_names = labels.skeleton.node_names
         # get video shape
         (video_frame_count, video_height, video_width, c) = labels.video.shape
+        # get frames per second
+        fps = labels.video.fps
         # make empty data frame
         data_frame = self.create_dataframe(node_names)
         # get video name for dataframe csv
@@ -83,7 +85,7 @@ class SleapParser:
                 score = instance.score
                 # make a new row for data frame
                 new_row = {"video": file_path, "frame_idx": frame_id, "instance_id": count, "score": score,
-                           "video_height": video_height, "video_width": video_width}
+                           "video_height": video_height, "video_width": video_width, "fps": fps}
                 for point in node_points:
                     # get name of node
                     node_name = point[0].name
