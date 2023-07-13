@@ -164,7 +164,8 @@ class SLEAPModel:
             save_file = video.replace(".mp4", "")
             save_file = save_file.replace(".MP4", "")
             sleap_video = self.load_video(self.video_dir + "/" + video)
-            # remove slp from previous run (for testing this is done now and not after program is completed
+            # remove slp from previous run
+            # for testing and corrections this is done now and not after program is completed
             files = [f for f in os.listdir("predictions/")]
             for f in files:
                 os.remove("predictions/" + f)
