@@ -6,7 +6,7 @@
 
 
 
-This is a tracker for tracking exploration behavior of birds. Currently trained for use on red knot exploration tests.
+This is a tracker for tracking exploration behavior of the red knot. Currently trained for use on red knot exploration tests.
 Runs a trained SLEAP model over multiple videos and returns tracking data as a csv file.
 
 More functionality to be added soon!
@@ -115,11 +115,22 @@ python SLEAPyTracks "path/to/your/video_dir/location/" -t -n 3
 
 
 ## References ##
+
+### SLEAP ###
+
 SLEAP is the successor to the single-animal pose estimation software LEAP (Pereira et al., Nature Methods, 2019).
 
 If you use SLEAP in your research, please cite:
 
-T.D. Pereira, N. Tabris, A. Matsliah, D. M. Turner, J. Li, S. Ravindranath, E. S. Papadoyannis, E. Normand, D. S. Deutsch, Z. Y. Wang, G. C. McKenzie-Smith, C. C. Mitelut, M. D. Castro, J. D’Uva, M. Kislin, D. H. Sanes, S. D. Kocher, S. S-H, A. L. Falkner, J. W. Shaevitz, and M. Murthy. Sleap: A deep learning system for multi-animal pose tracking. Nature Methods, 19(4), 2022
+T.D. Pereira, N. Tabris, A. Matsliah, D. M. Turner, J. Li, S. Ravindranath, E. S. Papadoyannis, E. Normand,
+D. S. Deutsch, Z. Y. Wang, G. C. McKenzie-Smith, C. C. Mitelut, M. D. Castro, J. D’Uva, M. Kislin, D. H. Sanes,
+S. D. Kocher, S. S-H, A. L. Falkner, J. W. Shaevitz, and M. Murthy. Sleap: A deep learning system for multi-animal pose
+tracking. Nature Methods, 19(4), 2022
+
+### Exploration in red knots ###
+
+Ersoy, S. Exploration in red knots: The role of personality in the expression of individual behaviour across contexts,
+PhD Thesis, University of Groningen, Groningen, The Netherlands.
 
 ## Contact ##
 
