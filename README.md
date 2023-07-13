@@ -11,7 +11,7 @@ Runs a trained SLEAP model over multiple videos and returns tracking data as a c
 
 More functionality to be added soon!
 
-* Version 0.1.0
+* Version 0.2.0
 
 ## Installation ##
 
@@ -37,20 +37,31 @@ Follow the installer instructions.
 
 open "Anaconda Powershell Prompt" from the start menu
 
-Execute the following lines in the Anaconda powershell:
+First we install SLEAP.
+
+Copy the following line in the Anaconda powershell and press enter:
 
 ```bash
 conda create -y -n sleap -c sleap -c nvidia -c conda-forge sleap=1.3.0
 ```
 
-During installation conda will show a lot of text on screen. This is normal. 
+Wait until the installation is finished.
+
+After installing SLEAP install ffmpeg by coping the following line into the shell and pressing enter:
 
 ```bash
 conda install -n sleap ffmpeg
 ```
 
 
-### Install SLEAPyTrack ###
+If you don't have git installed already, you can also install it with Miniconda:
+
+```bash
+conda install git
+```
+
+
+### Install SLEAPyTracks ###
 
 Clone the SLEAPyTracks repo from GitHub
 
@@ -82,11 +93,11 @@ run SLEAPyTracks on the directory you want to track
 python SLEAPyTracks "path/to/your/video_dir/location/"
 ```
 
-Output can be found in "SLEAPyTracks/SLEAPyTracks_output"
+Default output location can be found in the video directory under "predictions/"
 
 Files are saved as csv files
 
-more options:
+### more options: ###
 
 direct output to different directory
 
