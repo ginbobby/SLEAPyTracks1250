@@ -10,7 +10,8 @@ parser = argparse.ArgumentParser(
 parser.add_argument('video_dir', help='path to the directory containing the videos to be tracked', type=str)
 parser.add_argument('-o', '--output_dir', help='path to the directory to store the csv output files',
                     default='', type=str)
-parser.add_argument('-n', '--number_of_animals', help='the number of animals that are in the video', type=int,
+parser.add_argument('-n', '--number_of_animals', help='the maximum number of animals that are visible in one video',
+                    type=int,
                     default=1)
 parser.add_argument('-t', '--tracking', action='store_true', help='use tracking functionality (not trained properly '
                                                                   'yet!)')
