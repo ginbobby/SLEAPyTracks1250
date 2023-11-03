@@ -9,7 +9,7 @@
 This is a tracker for tracking exploration behavior of the red knot. Currently trained for use on red knot exploration tests.
 Runs a trained SLEAP model over multiple videos and returns tracking data as a csv file.
 
-More functionality to be added soon!
+Sinds SLEAP version 1.3.3 this program is mostly deprecated.
 
 * Version 0.2.0
 
