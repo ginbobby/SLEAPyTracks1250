@@ -166,11 +166,11 @@ class SLEAPModel:
             sleap_video = self.load_video(self.video_dir + "/" + video)
             # remove slp from previous run
             # for testing and corrections this is done now and not after program is completed
-            if os.path.exists("predictions/"):
-                files = [f for f in os.listdir("predictions/")]
-                for f in files:
-                    if os.path.exists("predictions/" + f):
-                        os.remove("predictions/" + f)
+            # if os.path.exists("predictions/"):
+            #     files = [f for f in os.listdir("predictions/")]
+            #     for f in files:
+            #         if os.path.exists("predictions/" + f):
+            #             os.remove("predictions/" + f)
 
             # most common error is KeyError while indexing videos
             try:
@@ -182,11 +182,11 @@ class SLEAPModel:
                 print("Attempting to fix it. please wait...")
                 subprocess.run(
                     ["ffmpeg", "-y", "-i", self.video_dir + "/" + video, "-c:v", "libx264", "-pix_fmt", "yuv420p",
-                     "-preset", "superfast", "-crf", "23", self.video_dir + "/fixed" + video])
+                     "-preset", "superfast", "-crf", "23", self.video_dir + "/fixed/" + "fix" + video])
                 try:
-                    sleap_video = self.load_video(self.video_dir + "/fixed" + video)
+                    sleap_video = self.load_video(self.video_dir + "/fixed/" + "fix" + video)
                     labels = self.run_model(sleap_video)
-                    labels.save("predictions/" + save_file)
+                    labels.save(self.video_dir + "/predictions/" + save_file)
                 except KeyError:
                     print("unable to fix video")
                     print("continue with next video (if there are any)")
