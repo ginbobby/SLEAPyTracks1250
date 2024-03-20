@@ -180,6 +180,8 @@ class SLEAPModel:
             except KeyError:
                 print("ran into error while indexing video: " + video)
                 print("Attempting to fix it. please wait...")
+                if not os.path.exists(self.video_dir + "fixed/"):
+                    os.makedirs(self.video_dir + "fixed/")
                 subprocess.run(
                     ["ffmpeg", "-y", "-i", self.video_dir + "/" + video, "-c:v", "libx264", "-pix_fmt", "yuv420p",
                      "-preset", "superfast", "-crf", "23", os.path.join(self.video_dir, "fixed/", "fix" + video)])
