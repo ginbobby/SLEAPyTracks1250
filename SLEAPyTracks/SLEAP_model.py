@@ -182,11 +182,11 @@ class SLEAPModel:
                 print("Attempting to fix it. please wait...")
                 subprocess.run(
                     ["ffmpeg", "-y", "-i", self.video_dir + "/" + video, "-c:v", "libx264", "-pix_fmt", "yuv420p",
-                     "-preset", "superfast", "-crf", "23", self.video_dir + "/fixed/" + "fix" + video])
+                     "-preset", "superfast", "-crf", "23", os.path.join(self.video_dir, "fixed/", "fix" + video)])
                 try:
-                    sleap_video = self.load_video(self.video_dir + "/fixed/" + "fix" + video)
+                    sleap_video = self.load_video(self.video_dir + "fixed/" + "fix" + video)
                     labels = self.run_model(sleap_video)
-                    labels.save(self.video_dir + "/predictions/" + save_file)
+                    labels.save(os.path.join(self.video_dir, "predictions/" , save_file))
                 except KeyError:
                     print("unable to fix video")
                     print("continue with next video (if there are any)")
