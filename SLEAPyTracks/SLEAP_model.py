@@ -136,7 +136,8 @@ class SLEAPModel:
         :return: SLEAP Labels object
         """
 
-        print('running model...')
+        print(f'running model on {video}')
+
 
         # run model
 
