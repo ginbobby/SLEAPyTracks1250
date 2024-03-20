@@ -8,10 +8,10 @@ autor: Antsje van der Leij
 
 import sys
 import os
-import sleap
+import logging
 import glob
 import subprocess
-
+import sleap
 
 class SLEAPModel:
     """
@@ -161,34 +161,36 @@ class SLEAPModel:
             print("run prediction for:")
             print(video)
             # use video name as name for predictions save file
-            save_file = video.replace(".mp4", "")
-            save_file = save_file.replace(".MP4", "")
+            save_name = video.replace(".mp4", "")
+            save_name = save_name.replace(".MP4", "")
             sleap_video = self.load_video(self.video_dir + "/" + video)
-            # remove slp from previous run
-            # for testing and corrections this is done now and not after program is completed
-            # if os.path.exists("predictions/"):
-            #     files = [f for f in os.listdir("predictions/")]
-            #     for f in files:
-            #         if os.path.exists("predictions/" + f):
-            #             os.remove("predictions/" + f)
+
+            # file path to save sleap predictions
+            sleap_pred_dir = self.video_dir + "sleap_predictions/"
+            slp_file = sleap_pred_dir + save_name + ".slp"
+
+            # make directory for sleap predictions one doesn't exist
+            if not os.path.isdir(sleap_pred_dir):
+                os.makedirs(sleap_pred_dir)
+                logging.debug("made a new directory for sleap predictions")
 
             # most common error is KeyError while indexing videos
             try:
                 labels = self.run_model(sleap_video)
-                labels.save("predictions/" + save_file)
+                labels.save(slp_file)
+                logging.info(f"slp file at {slp_file}")
             # ffmpeg command is a quick fix for KeyError while indexing
             except KeyError:
                 print("ran into error while indexing video: " + video)
                 print("Attempting to fix it. please wait...")
-                if not os.path.exists(self.video_dir + "fixed/"):
-                    os.makedirs(self.video_dir + "fixed/")
                 subprocess.run(
                     ["ffmpeg", "-y", "-i", self.video_dir + "/" + video, "-c:v", "libx264", "-pix_fmt", "yuv420p",
-                     "-preset", "superfast", "-crf", "23", os.path.join(self.video_dir, "fixed/", "fix" + video)])
+                     "-preset", "superfast", "-crf", "23", self.video_dir + "/fixed" + video])
                 try:
-                    sleap_video = self.load_video(self.video_dir + "fixed/" + "fix" + video)
+                    sleap_video = self.load_video(self.video_dir + "/fixed" + video)
                     labels = self.run_model(sleap_video)
-                    labels.save(os.path.join(self.video_dir, "predictions/" , save_file))
+                    labels.save(slp_file)
+                    logging.info(f"slp file at {slp_file}")
                 except KeyError:
                     print("unable to fix video")
                     print("continue with next video (if there are any)")
@@ -201,7 +203,7 @@ class SLEAPModel:
                 tracked_labels = self.run_tracker(labels, instance_count)
                 print(tracked_labels)
 
-                tracked_labels.save("predictions/tracks/" + save_file)
+                tracked_labels.save("predictions/tracks/" + save_name)
 
 
 def main():
