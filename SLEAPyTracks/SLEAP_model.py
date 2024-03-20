@@ -183,11 +183,14 @@ class SLEAPModel:
             except KeyError:
                 print("ran into error while indexing video: " + video)
                 print("Attempting to fix it. please wait...")
+                fixed_video_path = os.path.join(self.video_dir, "/fixed")
+                if not os.path.exists(fixed_video_path):
+                    os.makedirs(fixed_video_path)
                 subprocess.run(
                     ["ffmpeg", "-y", "-i", self.video_dir + "/" + video, "-c:v", "libx264", "-pix_fmt", "yuv420p",
-                     "-preset", "superfast", "-crf", "23", self.video_dir + "/fixed" + video])
+                     "-preset", "superfast", "-crf", "23", fixed_video_path + video])
                 try:
-                    sleap_video = self.load_video(self.video_dir + "/fixed" + video)
+                    sleap_video = self.load_video(fixed_video_path + video)
                     labels = self.run_model(sleap_video)
                     labels.save(slp_file)
                     logging.info(f"slp file at {slp_file}")

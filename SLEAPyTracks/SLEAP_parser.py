@@ -111,6 +111,7 @@ class SleapParser:
         print("converting to csv")
         # directory with the slp files
         predict_dir = os.path.join(output_dir,"sleap_predictions/")
+        csv_output = os.path.join(output_dir, 'SLEAPyTracks_output')
 
         files = self.get_files_from_dir(predict_dir, ".slp")
         print(files)

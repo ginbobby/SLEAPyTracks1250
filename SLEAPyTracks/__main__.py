@@ -27,7 +27,7 @@ if __name__ == "__main__":
     model.predict(args.number_of_animals, args.tracking)
 
     if args.output_dir == '':
-        SleapParser().get_results( args.video_dir + 'SLEAPyTracks_output')
+        SleapParser().get_results( args.video_dir)
     else:
         SleapParser().get_results(args.output_dir)
 
