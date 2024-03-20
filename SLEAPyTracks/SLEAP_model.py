@@ -165,10 +165,13 @@ class SLEAPModel:
             sleap_video = self.load_video(self.video_dir + "/" + video)
             # remove slp from previous run
             # for testing and corrections this is done now and not after program is completed
-            files = [f for f in os.listdir("predictions/")]
-            for f in files:
-                os.remove("predictions/" + f)
-            # most common error is KeyError while indexing videos
+            try:
+                files = [f for f in os.listdir("predictions/")]
+                for f in files:
+                    os.remove("predictions/" + f)
+            except:
+                pass
+                # most common error is KeyError while indexing videos
             try:
                 labels = self.run_model(sleap_video)
                 labels.save("predictions/" + save_file)
