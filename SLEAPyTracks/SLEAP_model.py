@@ -37,7 +37,6 @@ class SLEAPModel:
         # check if file exists
         if not os.path.isdir(path):
             sys.exit("File path to videos does not exist or is incorrect!")
-            print(path)
 
         # get only one type of file
         files = [f for f in os.listdir(path) if f.endswith(file_extension) or f.endswith(file_extension.upper())]
@@ -47,6 +46,21 @@ class SLEAPModel:
             sys.exit("no " + file_extension + " found in " + path)
 
         return files
+
+    def find_videos_in_sub_dir(self):
+        """
+        find videos in self.video_dir and return a list of all videos in self.video_dir
+        :return:
+        """
+        import os
+
+        video_files = []
+        for root, dirs, files in os.walk(self.video_dir):
+            for file in files:
+                if file.endswith((".mp4", "MP4")):
+                    video_files.append(os.path.join(root, file))
+
+        return video_files
 
     def load_video(self, path_to_video):
         """
@@ -138,7 +152,6 @@ class SLEAPModel:
 
         print(f'running model on {video}')
 
-
         # run model
 
         labels = self.model.predict(video)
@@ -154,20 +167,20 @@ class SLEAPModel:
 
         """
 
-        videos = self.get_files_from_dir(self.video_dir, ".mp4")
+        videos = self.find_videos_in_sub_dir()
         print(videos)
         for video in videos:
+            video_name = os.path.basename(video)
 
             print("run prediction for:")
-            print(video)
+            print(video_name)
             # use video name as name for predictions save file
-            save_name = video.replace(".mp4", "")
-            save_name = save_name.replace(".MP4", "")
-            sleap_video = self.load_video(self.video_dir + "/" + video)
+            sleap_video = self.load_video(video)
+            save_name = os.path.splitext(video_name)[0]
 
             # file path to save sleap predictions
-            sleap_pred_dir = self.video_dir + "sleap_predictions/"
-            slp_file = sleap_pred_dir + save_name + ".slp"
+            sleap_pred_dir = os.path.join(self.video_dir, "sleap_predictions/")
+            slp_file = os.path.join(sleap_pred_dir, f"{save_name}.slp")
 
             # make directory for sleap predictions one doesn't exist
             if not os.path.isdir(sleap_pred_dir):
@@ -181,20 +194,10 @@ class SLEAPModel:
                 logging.info(f"slp file at {slp_file}")
             # ffmpeg command is a quick fix for KeyError while indexing
             except KeyError:
-                print("ran into error while indexing video: " + video)
-                print("Attempting to fix it. please wait...")
-                subprocess.run(
-                    ["ffmpeg", "-y", "-i", self.video_dir + "/" + video, "-c:v", "libx264", "-pix_fmt", "yuv420p",
-                     "-preset", "superfast", "-crf", "23", self.video_dir + "/fixed" + video])
-                try:
-                    sleap_video = self.load_video(self.video_dir + "/fixed" + video)
-                    labels = self.run_model(sleap_video)
-                    labels.save(slp_file)
-                    logging.info(f"slp file at {slp_file}")
-                except KeyError:
-                    print("unable to fix video")
-                    print("continue with next video (if there are any)")
-                    continue
+                print("ran into error while indexing video: " + video_name)
+                print("please check the SLEAP faq for more info.")
+                print("continue with next video (if there are any)...")
+                continue
 
             # if tracking flag is set to True start tracking function
             if tracking:
