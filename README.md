@@ -87,7 +87,8 @@ with the Anaconda powershell go into the map for SLEAPyTracks
 ```bash
 cd SLEAPyTracks
 ```
-run SLEAPyTracks on the directory you want to track
+run SLEAPyTracks on the directory you want to track.
+SLEAPyTracks will look for and process all mp4 video file in this directory and its subdirectories.
 
 ```bash
 python SLEAPyTracks "path/to/your/video_dir/location/"
