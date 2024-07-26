@@ -168,19 +168,28 @@ class SLEAPModel:
         """
 
         videos = self.find_videos_in_sub_dir()
-        print(videos)
-        for video in videos:
-            video_name = os.path.basename(video)
+        print(f"predicting on {len(videos)} videos")
+        for i, video in enumerate(videos):
 
-            print("run prediction for:")
-            print(video_name)
-            # use video name as name for predictions save file
-            sleap_video = self.load_video(video)
+            # get video names
+            video_name = os.path.basename(video)
             save_name = os.path.splitext(video_name)[0]
 
             # file path to save sleap predictions
             sleap_pred_dir = os.path.join(self.video_dir, "sleap_predictions/")
             slp_file = os.path.join(sleap_pred_dir, f"{save_name}.slp")
+
+            if os.path.isfile(slp_file):
+                print(f"predictions for video {video_name} already exist")
+                print("skipping prediction for this video")
+                continue
+
+
+            print("run prediction for:")
+            print(video_name)
+            # use video name as name for predictions save file
+            sleap_video = self.load_video(video)
+
 
             # make directory for sleap predictions one doesn't exist
             if not os.path.isdir(sleap_pred_dir):
@@ -207,6 +216,8 @@ class SLEAPModel:
                 print(tracked_labels)
 
                 tracked_labels.save("predictions/tracks/" + save_name)
+
+            print("done with {i} of {len(videos)} videos")
 
 
 def main():
