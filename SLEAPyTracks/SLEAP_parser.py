@@ -60,18 +60,22 @@ class SleapParser:
     def sleap_to_pandas(self, filename, output_dir):
         # load SLEAP (.slp) file
         labels = sleap.load_file(filename)
-
+        # get video name for dataframe csv
+        file_path = labels.video.backend.filename
+        video_name = os.path.splitext(os.path.basename(filename))[0]
         # get node names from skeleton
-        node_names = labels.skeleton.node_names
+        try:
+            node_names = labels.skeleton.node_names
+        except:
+            print(f"no instances found in {video_name}")
+            pass
         # get video shape
         (video_frame_count, video_height, video_width, c) = labels.video.shape
         # get frames per second
         fps = labels.video.fps
         # make empty data frame
         data_frame = self.create_dataframe(node_names)
-        # get video name for dataframe csv
-        file_path = labels.video.backend.filename
-        video_name = os.path.splitext(os.path.basename(filename))[0]
+
         print("SLEAP to Pandas...")
         for frame in labels.labeled_frames:
             frame_id = frame.frame_idx
