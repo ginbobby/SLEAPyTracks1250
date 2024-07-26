@@ -20,11 +20,11 @@ class SLEAPModel:
     Uses a model that is trained using the SLEAP GUI.
     """
 
-    def __init__(self, video_dir, predictions_out_dir="predictions/"):
+    def __init__(self, video_dir, predictions_out_dir):
 
         self.video_dir = video_dir
         self.model = self.load_model()
-        self.predictions_out_dir = predictions_out_dir
+        self.predictions_out_dir = os.path.join(predictions_out_dir, "prediction_slp_files")
 
     def get_files_from_dir(self, path, file_extension):
         """
@@ -176,8 +176,7 @@ class SLEAPModel:
             save_name = os.path.splitext(video_name)[0]
 
             # file path to save sleap predictions
-            sleap_pred_dir = os.path.join(self.video_dir, "sleap_predictions/")
-            slp_file = os.path.join(sleap_pred_dir, f"{save_name}.slp")
+            slp_file = os.path.join(self.predictions_out_dir, save_name + ".slp")
 
             if os.path.isfile(slp_file):
                 print(f"predictions for video {video_name} already exist")
@@ -192,8 +191,8 @@ class SLEAPModel:
 
 
             # make directory for sleap predictions one doesn't exist
-            if not os.path.isdir(sleap_pred_dir):
-                os.makedirs(sleap_pred_dir)
+            if not os.path.isdir(self.predictions_out_dir):
+                os.makedirs(self.predictions_out_dir)
                 logging.debug("made a new directory for sleap predictions")
 
             # most common error is KeyError while indexing videos
@@ -217,7 +216,7 @@ class SLEAPModel:
 
                 tracked_labels.save("predictions/tracks/" + save_name)
 
-            print("done with {i} of {len(videos)} videos")
+            print(f"done with {i+1} of {len(videos)} videos")
 
 
 def main():

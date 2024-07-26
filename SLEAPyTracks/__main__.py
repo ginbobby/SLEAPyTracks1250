@@ -23,12 +23,13 @@ if __name__ == "__main__":
     from SLEAP_parser import SleapParser
     from SLEAP_model import SLEAPModel
 
-    model = SLEAPModel(args.video_dir)
-    model.predict(args.number_of_animals, args.tracking)
-
     if args.output_dir == '':
+        model = SLEAPModel(args.video_dir, predictions_out_dir=args.video_dir)
+        model.predict(args.number_of_animals, args.tracking)
         SleapParser().get_results(args.video_dir)
     else:
+        model = SLEAPModel(args.video_dir, predictions_out_dir=args.output_dir)
+        model.predict(args.number_of_animals, args.tracking)
         SleapParser().get_results(args.output_dir)
 
     print('all done!')

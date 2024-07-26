@@ -60,6 +60,7 @@ class SleapParser:
     def sleap_to_pandas(self, filename, output_dir):
         # load SLEAP (.slp) file
         labels = sleap.load_file(filename)
+
         # get node names from skeleton
         node_names = labels.skeleton.node_names
         # get video shape
@@ -70,9 +71,7 @@ class SleapParser:
         data_frame = self.create_dataframe(node_names)
         # get video name for dataframe csv
         file_path = labels.video.backend.filename
-        video_name = file_path.split("/")
-        video_name = video_name[-1]
-        video_name = video_name.replace(".mp4", "")
+        video_name = os.path.splitext(os.path.basename(filename))[0]
         print("SLEAP to Pandas...")
         for frame in labels.labeled_frames:
             frame_id = frame.frame_idx
@@ -99,18 +98,15 @@ class SleapParser:
                 df1 = pandas.DataFrame(new_row)
                 data_frame = pandas.concat([data_frame, df1], ignore_index=True)
         # change extension for file name
-        save_name = video_name.replace("mp4", "csv")
-        save_name = save_name.replace("MP4", "csv")
         # save to csv
         if not os.path.exists(output_dir):
             os.mkdir(output_dir)
-
-        data_frame.to_csv(output_dir + "/" + save_name)
+        data_frame.to_csv(output_dir + "/" + video_name + ".csv")
 
     def get_results(self, output_dir):
         print("converting to csv")
         # directory with the slp files
-        predict_dir = os.path.join(output_dir,"sleap_predictions/")
+        predict_dir = os.path.join(output_dir, "prediction_slp_files")
         csv_output = os.path.join(output_dir, 'SLEAPyTracks_output')
 
         files = self.get_files_from_dir(predict_dir, ".slp")
