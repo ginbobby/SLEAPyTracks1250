@@ -84,7 +84,7 @@ class SleapParser:
                 node_points = instance.nodes_points
                 score = instance.score
                 # make a new row for data frame
-                new_row = {"video": file_path, "frame_idx": frame_id, "instance_id": count, "score": score,
+                new_row = {"video": file_path, "frame_idx": frame_id, "instance_id": count, "instance_score": score,
                            "video_height": video_height, "video_width": video_width, "fps": fps}
                 for point in node_points:
                     # get name of node
@@ -99,6 +99,11 @@ class SleapParser:
                     # save coordinates in new_row
                     new_row[node_name_x] = [x]
                     new_row[node_name_y] = [y]
+                    # save scores of every point in new row
+                    node_name_score = node_name + "_score"
+                    point_score = tuple_point[-1]
+                    new_row[node_name_score] = [score]
+                print(new_row)
                 df1 = pandas.DataFrame(new_row)
                 data_frame = pandas.concat([data_frame, df1], ignore_index=True)
         # change extension for file name
