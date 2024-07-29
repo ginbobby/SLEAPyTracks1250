@@ -103,7 +103,6 @@ class SleapParser:
                     node_name_score = node_name + "_score"
                     point_score = tuple_point[-1]
                     new_row[node_name_score] = [score]
-                print(new_row)
                 df1 = pandas.DataFrame(new_row)
                 data_frame = pandas.concat([data_frame, df1], ignore_index=True)
         # change extension for file name
